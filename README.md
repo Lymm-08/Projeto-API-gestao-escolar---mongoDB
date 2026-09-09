@@ -1,11 +1,11 @@
-# Gestão Escolar 📚
+# Gestão Escolar 
 
 Backend para gerenciamento de alunos, feito com **Node.js**, **Express** e **MongoDB**.  
 Permite operações de **GET**, **POST** e **DELETE** para manipular dados de alunos.
 
 ---
 
-## 🚀 Tecnologias
+##  Tecnologias
 - **Node.js**  
 - **Express**  
 - **MongoDB**  
@@ -13,7 +13,7 @@ Permite operações de **GET**, **POST** e **DELETE** para manipular dados de al
 
 ---
 
-## 📂 Estrutura do projeto
+##  Estrutura do projeto
 ```
 gestao_escolar/
 │── src/
@@ -29,7 +29,7 @@ gestao_escolar/
 
 ---
 
-## ⚙️ Como rodar localmente
+##  Como rodar localmente
 1. **Instalar dependências**  
    ```bash
    npm install
@@ -52,7 +52,7 @@ gestao_escolar/
 
 ---
 
-## 📌 Endpoints
+##  Endpoints
 - **GET /alunos** → lista todos os alunos  
 - **POST /alunos** → cadastra novo aluno  
   ```json
@@ -65,7 +65,7 @@ gestao_escolar/
 
 ---
 
-## 🖼️ Prints
+##  Prints
 
 ### Banco de dados
 ![Banco de dados](imagens/Banco%20de%20dados.png)
