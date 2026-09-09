@@ -82,10 +82,13 @@ gestao_escolar/
 ### DELETE
 ![DELETE](imagens/DELETE.png)
 
-### GET após o DELETE
-![GET após o DELETE](imagens/GET após o DELET.png)
+### GET depois do DELETE
+![GET depois do DELETE](imagens/GET%20depois%20do%20DELETE.png)
 
-### Lista após o DELETE
-![Lista após o DELETE](imagens/lista após o DELET.png)
+### GET lista depois do DELETE
+![GET lista depois do DELETE](imagens/GET%20lista%20depois%20do%20DELETE.png)
+
+### Lista depois do DELETE
+![Lista depois do DELETE](imagens/lista%20depois%20do%20DELETE.png)
 
 ```
