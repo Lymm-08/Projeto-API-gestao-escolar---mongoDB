@@ -65,7 +65,7 @@ gestao_escolar/
 
 ---
 
-## 🖼️ Prints
+## Prints
 
 ### Banco de dados
 ![Banco de dados](imagens/Banco%20de%20dados.png)
