@@ -64,3 +64,30 @@ gestao_escolar/
 - **DELETE /alunos/:id** → remove aluno pelo ID  
 
 ---
+
+##  Prints
+
+### Banco de dados
+![Banco de dados](imagens/Banco%20de%20dados.png)
+
+### GET antes de cadastrar
+![GET antes de cadastrar](imagens/GET%20antes%20de%20cadastrar.png)
+
+### POST (cadastro de aluno)
+![POST](imagens/POST.png)
+
+### 3 alunos cadastrados
+![3 alunos cadastrados](imagens/3%20alunos%20cadastrados.png)
+
+### DELETE
+![DELETE](imagens/DELETE.png)
+
+### GET depois do DELETE
+![GET depois do DELETE](imagens/GET_depois_do_DELETE.png)
+
+### GET lista depois do DELETE
+![GET lista depois do DELETE](imagens/GET_lista_depois_do_DELETE.png)
+
+### Lista depois do DELETE
+![Lista depois do DELETE](imagens/lista_depois_do_DELETE.png)
+---
