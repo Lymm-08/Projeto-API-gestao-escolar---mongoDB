@@ -130,3 +130,9 @@ Capturas de tela do banco de dados e de exemplos de requisições:
 | Remoção (`DELETE`) | Consultas (`GET`) |
 | --- | --- |
 | ![Exemplo de remoção](imagens/DELETE.png) | ![Resultado de consulta](imagens/GET1ac.png) |
+
+Outras capturas de consultas e da lista após a remoção:
+
+- [GET após o cadastro](imagens/GET2dd.png)
+- [Lista após a remoção](imagens/GET3ld.png)
+- [Lista de alunos após a remoção](imagens/listaDepoisDoDelet.png)
