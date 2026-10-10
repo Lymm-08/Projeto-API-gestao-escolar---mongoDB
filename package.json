@@ -1,14 +1,20 @@
 {
   "name": "projeto-api-gestao-escolar",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API REST para gestão de alunos, desenvolvida com Node.js, Express e MongoDB.",
+  "main": "src/app.js",
   "scripts": {
     "test": "jest",
     "start": "node src/app.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "api",
+    "express",
+    "gestao-escolar",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "Lymm-08 <emilycristina.sp@gmail.com>",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
