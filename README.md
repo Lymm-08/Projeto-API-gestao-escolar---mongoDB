@@ -1,110 +1,132 @@
-# Gestão Escolar 
+# API de Gestão Escolar
 
-Backend para gerenciamento de alunos, feito com **Node.js**, **Express** e **MongoDB**.  
-Permite operações de **GET**, **POST** e **DELETE** para manipular dados de alunos.
+API REST para consultar e gerenciar alunos, desenvolvida com Node.js, Express e MongoDB.
 
----
+## Funcionalidades
 
-##  Tecnologias
-- **Node.js**  
-- **Express**  
-- **MongoDB**  
-- **Thunder Client** (para testes de API)
+- Listar alunos cadastrados.
+- Cadastrar um aluno.
+- Consultar e atualizar um aluno pelo ID.
+- Remover um aluno pelo ID.
 
----
+## Tecnologias
 
-##  Estrutura do projeto
-```
-gestao_escolar/
-│── src/
-│   ├── routes/
-│   │   └── alunos.js
-│   ├── app.js
-│   └── db.js
-│── .env
-│── package.json
-│── README.md
-│── imagens/   ← pasta para prints
-```
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Jest](https://jestjs.io/) e [Supertest](https://github.com/ladjs/supertest) para testes automatizados.
 
----
+## Requisitos
 
-##  Como rodar localmente
-1. **Instalar dependências**  
+- Node.js e npm instalados.
+- Uma instância do MongoDB acessível pela aplicação.
+
+## Como executar
+
+1. Instale as dependências:
+
    ```bash
    npm install
    ```
 
-2. **Configurar `.env`**  
+2. Crie um arquivo `.env` na raiz do projeto e configure a conexão com o MongoDB:
+
    ```env
-   MONGO_URI=mongodb://localhost:27017/gestao_escolar
+   MONGO_URI=mongodb://localhost:27017
    ```
 
-3. **Iniciar MongoDB local**  
-   - Crie a pasta `C:\data\db` (Windows) ou `/data/db` (Linux/macOS).  
-   - Rode o serviço `mongod` para ativar o servidor na porta `27017`.
+   A aplicação usa o banco `gestao_escolar` e a coleção `alunos`.
 
-4. **Rodar o servidor Node.js**  
+3. Inicie a API:
+
    ```bash
    npm start
    ```
-   O backend estará disponível em `http://localhost:3000`.
 
----
+Por padrão, a API fica disponível em `http://localhost:3000`. Para alterar a porta, defina a variável `PORT`.
 
-##  Endpoints
+## Rotas
+
+Todas as rotas usam o prefixo `/alunos`.
 
 | Método | Rota | Descrição |
 | --- | --- | --- |
-| GET | `/alunos` | Lista todos os alunos |
-| POST | `/alunos` | Cadastra um novo aluno |
-| GET | `/alunos/:id` | Busca um aluno pelo ID |
-| PUT | `/alunos/:id` | Atualiza os dados de um aluno |
-| DELETE | `/alunos/:id` | Remove um aluno pelo ID |
+| `GET` | `/alunos` | Retorna a lista de alunos. |
+| `POST` | `/alunos` | Cadastra um aluno. |
+| `GET` | `/alunos/:id` | Busca um aluno pelo ID. |
+| `PUT` | `/alunos/:id` | Atualiza os campos informados para o aluno. |
+| `DELETE` | `/alunos/:id` | Remove um aluno pelo ID. |
 
-Exemplo de corpo para **POST /alunos**:
-  ```json
-  {
-    "nome": "Maria",
-    "idade": 15
-  }
-  ```
+### Exemplos
+
+Cadastrar um aluno:
+
+```http
+POST /alunos
+Content-Type: application/json
+```
+
+```json
+{
+  "nome": "Maria",
+  "idade": 15
+}
+```
+
+A API acrescenta `situacao: "ativo"` e `dataCadastro` ao documento enviado e retorna o resultado da inserção do MongoDB.
+
+Atualizar um aluno:
+
+```http
+PUT /alunos/507f1f77bcf86cd799439011
+Content-Type: application/json
+```
+
+```json
+{
+  "idade": 16
+}
+```
+
+### Respostas de erro
+
+Nas operações por ID, um formato inválido retorna HTTP `400` com `{"erro":"ID inválido"}`. Se o ID for válido, mas não corresponder a um aluno, a API retorna HTTP `404` com `{"erro":"Aluno não encontrado"}`.
 
 ## Testes
 
-Execute os testes automatizados com:
+Execute a suíte automatizada com:
 
 ```bash
 npm test
 ```
 
-Os testes cobrem a listagem de alunos, o cadastro com dados válidos e a resposta para JSON inválido, além da remoção de um aluno existente e dos casos de ID inexistente ou inválido. O acesso ao MongoDB é simulado com `jest.mock`, sem necessidade de um banco em execução. As ferramentas usadas são **Jest** e **Supertest**.
+Os testes cobrem a listagem, o cadastro com dados válidos, o tratamento de JSON inválido, a remoção de um aluno existente e os casos de aluno inexistente ou ID inválido. O acesso ao MongoDB é simulado com `jest.mock`, portanto não é necessário iniciar um banco para executar os testes. A suíte usa Jest e Supertest.
 
----
+## Estrutura do projeto
 
-##  Prints
+```text
+.
+├── src/
+│   ├── routes/
+│   │   └── alunos.js
+│   ├── app.js
+│   └── db.js
+├── tests/
+│   └── alunos.test.js
+├── imagens/
+├── .env
+├── package.json
+└── README.md
+```
 
-### Banco de dados
-![Banco de dados](imagens/Banco%20de%20dados.png)
+## Imagens
 
-### GET antes de cadastrar
-![GET antes de cadastrar](imagens/GET%20antes%20de%20cadastrar.png)
+Capturas de tela do banco de dados e de exemplos de requisições:
 
-### POST (cadastro de aluno)
-![POST](imagens/POST.png)
+| Banco de dados | Cadastro (`POST`) |
+| --- | --- |
+| ![Visualização do banco de dados](imagens/Banco%20de%20dados.png) | ![Exemplo de cadastro](imagens/POST.png) |
 
-### 3 alunos cadastrados
-![3 alunos cadastrados](imagens/3%20alunos%20cadastrados.png)
-
-### DELETE
-![DELETE](imagens/DELETE.png)
-
-### GET depois do DELETE
-![GET depois do DELETE](imagens/GET_depois_do_DELETE.png)
-
-### GET lista depois do DELETE
-![GET lista depois do DELETE](imagens/GET_lista_depois_do_DELETE.png)
-
-### Lista depois do DELETE
-![Lista depois do DELETE](imagens/lista_depois_do_DELETE.png)
----
+| Remoção (`DELETE`) | Consultas (`GET`) |
+| --- | --- |
+| ![Exemplo de remoção](imagens/DELETE.png) | ![Resultado de consulta](imagens/GET1ac.png) |
