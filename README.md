@@ -53,15 +53,32 @@ gestao_escolar/
 ---
 
 ##  Endpoints
-- **GET /alunos** → lista todos os alunos  
-- **POST /alunos** → cadastra novo aluno  
+
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| GET | `/alunos` | Lista todos os alunos |
+| POST | `/alunos` | Cadastra um novo aluno |
+| GET | `/alunos/:id` | Busca um aluno pelo ID |
+| PUT | `/alunos/:id` | Atualiza os dados de um aluno |
+| DELETE | `/alunos/:id` | Remove um aluno pelo ID |
+
+Exemplo de corpo para **POST /alunos**:
   ```json
   {
     "nome": "Maria",
     "idade": 15
   }
   ```
-- **DELETE /alunos/:id** → remove aluno pelo ID  
+
+## Testes
+
+Execute os testes automatizados com:
+
+```bash
+npm test
+```
+
+Os testes cobrem a listagem de alunos, o cadastro com dados válidos e a resposta para JSON inválido, além da remoção de um aluno existente e dos casos de ID inexistente ou inválido. O acesso ao MongoDB é simulado com `jest.mock`, sem necessidade de um banco em execução. As ferramentas usadas são **Jest** e **Supertest**.
 
 ---
 
