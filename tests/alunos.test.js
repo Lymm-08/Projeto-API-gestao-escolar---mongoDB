@@ -7,6 +7,8 @@ jest.mock("../src/db", () => jest.fn());
 const collection = {
   find: jest.fn(),
   insertOne: jest.fn(),
+  findOne: jest.fn(),
+  updateOne: jest.fn(),
   deleteOne: jest.fn(),
 };
 
@@ -15,6 +17,10 @@ beforeEach(() => {
   connectDB.mockResolvedValue({
     collection: jest.fn().mockReturnValue(collection),
   });
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
 });
 
 describe("GET /alunos", () => {
@@ -28,6 +34,40 @@ describe("GET /alunos", () => {
     expect(response.body).toEqual(alunos);
     expect(collection.find).toHaveBeenCalledWith();
   });
+
+  it("retorna erro 500 em caso de falha no banco", async () => {
+    connectDB.mockRejectedValue(new Error("falha interna"));
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    const response = await request(app).get("/alunos");
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ erro: "Erro interno do servidor" });
+  });
+});
+
+describe("GET /alunos/:id", () => {
+  it("retorna um aluno existente", async () => {
+    const aluno = { nome: "Maria", idade: 15 };
+    collection.findOne.mockResolvedValue(aluno);
+
+    const response = await request(app).get("/alunos/507f1f77bcf86cd799439011");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(aluno);
+    expect(collection.findOne).toHaveBeenCalledWith({
+      _id: expect.any(Object),
+    });
+  });
+
+  it("retorna erro 404 quando o aluno não existe", async () => {
+    collection.findOne.mockResolvedValue(null);
+
+    const response = await request(app).get("/alunos/507f1f77bcf86cd799439011");
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ erro: "Aluno não encontrado" });
+  });
 });
 
 describe("POST /alunos", () => {
@@ -39,7 +79,7 @@ describe("POST /alunos", () => {
       .post("/alunos")
       .send({ nome: "Maria", idade: 15 });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
     expect(response.body).toEqual(resultado);
     expect(collection.insertOne).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -58,7 +98,83 @@ describe("POST /alunos", () => {
       .send('{"nome":');
 
     expect(response.status).toBe(400);
+    expect(response.body).toEqual({ erro: "JSON inválido" });
     expect(connectDB).not.toHaveBeenCalled();
+  });
+
+  it("retorna erro 400 quando o nome está ausente", async () => {
+    const response = await request(app).post("/alunos").send({ idade: 15 });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ erro: "Nome é obrigatório" });
+    expect(connectDB).not.toHaveBeenCalled();
+  });
+
+  it("retorna erro 400 quando a idade não é numérica", async () => {
+    const response = await request(app)
+      .post("/alunos")
+      .send({ nome: "Maria", idade: "15" });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ erro: "Idade deve ser um número" });
+    expect(connectDB).not.toHaveBeenCalled();
+  });
+});
+
+describe("PUT /alunos/:id", () => {
+  const id = "507f1f77bcf86cd799439011";
+  const dadosAluno = { nome: "Maria", idade: 16 };
+
+  it("atualiza um aluno existente", async () => {
+    collection.updateOne.mockResolvedValue({ matchedCount: 1 });
+
+    const response = await request(app).put(`/alunos/${id}`).send(dadosAluno);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ mensagem: "Atualizado com sucesso" });
+    expect(collection.updateOne).toHaveBeenCalledWith(
+      { _id: expect.any(Object) },
+      { $set: dadosAluno },
+    );
+  });
+
+  it("retorna erro 400 para um ID inválido", async () => {
+    const response = await request(app)
+      .put("/alunos/id-invalido")
+      .send(dadosAluno);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ erro: "ID inválido" });
+    expect(connectDB).not.toHaveBeenCalled();
+  });
+
+  it("retorna erro 400 quando o nome está ausente", async () => {
+    const response = await request(app)
+      .put(`/alunos/${id}`)
+      .send({ idade: 16 });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ erro: "Nome é obrigatório" });
+    expect(connectDB).not.toHaveBeenCalled();
+  });
+
+  it("retorna erro 400 quando a idade não é numérica", async () => {
+    const response = await request(app)
+      .put(`/alunos/${id}`)
+      .send({ nome: "Maria", idade: "16" });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ erro: "Idade deve ser um número" });
+    expect(connectDB).not.toHaveBeenCalled();
+  });
+
+  it("retorna erro 404 quando o aluno não existe", async () => {
+    collection.updateOne.mockResolvedValue({ matchedCount: 0 });
+
+    const response = await request(app).put(`/alunos/${id}`).send(dadosAluno);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ erro: "Aluno não encontrado" });
   });
 });
 
