@@ -1,6 +1,6 @@
 # API de Gestão Escolar
 
-API REST para consultar e gerenciar alunos, desenvolvida com Node.js, Express e MongoDB.
+API REST para gerenciamento de alunos, desenvolvida com Node.js, Express e MongoDB.
 
 ## Funcionalidades
 
@@ -23,48 +23,42 @@ API REST para consultar e gerenciar alunos, desenvolvida com Node.js, Express e 
 
 ## Como executar
 
-1. Instale as dependências:
+1. Instale as dependências do projeto:
 
    ```bash
    npm install
    ```
 
-2. Crie um arquivo `.env` na raiz do projeto e configure a conexão com o MongoDB:
+2. Copie `.env.example` para `.env` e configure a conexão com o MongoDB:
 
    ```env
    MONGO_URI=mongodb://localhost:27017
+   PORT=3000
    ```
 
-   A aplicação usa o banco `gestao_escolar` e a coleção `alunos`.
+   A aplicação usa o banco `gestao_escolar` e a coleção `alunos`. O arquivo `.env` não deve ser versionado.
 
-3. Inicie a API:
+3. Inicie o servidor:
 
    ```bash
    npm start
    ```
 
-Por padrão, a API fica disponível em `http://localhost:3000`. Para alterar a porta, defina a variável `PORT`.
+Por padrão, a API fica disponível em `http://localhost:3000`. A porta pode ser alterada pela variável `PORT`.
 
 ## Rotas
 
-Todas as rotas usam o prefixo `/alunos`.
+Todas as rotas usam o prefixo `/alunos`. Os corpos das requisições de criação e atualização devem ser enviados em JSON e conter `nome` (texto não vazio) e `idade` (número).
 
-| Método | Rota | Descrição |
-| --- | --- | --- |
-| `GET` | `/alunos` | Retorna a lista de alunos. |
-| `POST` | `/alunos` | Cadastra um aluno. |
-| `GET` | `/alunos/:id` | Busca um aluno pelo ID. |
-| `PUT` | `/alunos/:id` | Atualiza os campos informados para o aluno. |
-| `DELETE` | `/alunos/:id` | Remove um aluno pelo ID. |
+| Método | Rota | Descrição | Códigos de resposta |
+| --- | --- | --- | --- |
+| `GET` | `/alunos` | Retorna a lista de alunos. | `200`, `500` |
+| `POST` | `/alunos` | Cadastra um aluno. | `201`, `400`, `500` |
+| `GET` | `/alunos/:id` | Busca um aluno pelo ID. | `200`, `400`, `404`, `500` |
+| `PUT` | `/alunos/:id` | Atualiza nome e idade de um aluno. | `200`, `400`, `404`, `500` |
+| `DELETE` | `/alunos/:id` | Remove um aluno pelo ID. | `200`, `400`, `404`, `500` |
 
-### Exemplos
-
-Cadastrar um aluno:
-
-```http
-POST /alunos
-Content-Type: application/json
-```
+### Exemplo de cadastro
 
 ```json
 {
@@ -73,9 +67,9 @@ Content-Type: application/json
 }
 ```
 
-A API acrescenta `situacao: "ativo"` e `dataCadastro` ao documento enviado e retorna o resultado da inserção do MongoDB.
+A API acrescenta `situacao: "ativo"` e `dataCadastro` ao documento e retorna o resultado da inserção com HTTP `201`.
 
-Atualizar um aluno:
+### Exemplo de atualização
 
 ```http
 PUT /alunos/507f1f77bcf86cd799439011
@@ -84,23 +78,24 @@ Content-Type: application/json
 
 ```json
 {
+  "nome": "Maria",
   "idade": 16
 }
 ```
 
 ### Respostas de erro
 
-Nas operações por ID, um formato inválido retorna HTTP `400` com `{"erro":"ID inválido"}`. Se o ID for válido, mas não corresponder a um aluno, a API retorna HTTP `404` com `{"erro":"Aluno não encontrado"}`.
+As respostas de erro seguem o formato JSON `{"erro":"mensagem"}`. Dados inválidos ou IDs malformados retornam HTTP `400`; um aluno com ID válido, mas inexistente, retorna HTTP `404`; falhas inesperadas do servidor retornam HTTP `500`.
 
 ## Testes
 
-Execute a suíte automatizada com:
+Execute a suíte automatizada com Jest e Supertest:
 
 ```bash
 npm test
 ```
 
-Os testes cobrem a listagem, o cadastro com dados válidos, o tratamento de JSON inválido, a remoção de um aluno existente e os casos de aluno inexistente ou ID inválido. O acesso ao MongoDB é simulado com `jest.mock`, portanto não é necessário iniciar um banco para executar os testes. A suíte usa Jest e Supertest.
+Os testes cobrem as rotas GET, POST, PUT e DELETE de `/alunos`, incluindo validação de nome e idade, JSON inválido, ID malformado e aluno inexistente. O MongoDB é simulado com `jest.mock`; não é necessário iniciar um banco para executar os testes.
 
 ## Estrutura do projeto
 
@@ -114,7 +109,8 @@ Os testes cobrem a listagem, o cadastro com dados válidos, o tratamento de JSON
 ├── tests/
 │   └── alunos.test.js
 ├── imagens/
-├── .env
+├── .env.example
+├── .gitignore
 ├── package.json
 └── README.md
 ```
